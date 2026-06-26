@@ -1,0 +1,76 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Freedompay\HPP\Block\Widget\Logos;
+
+/**
+ * @var Escaper $escaper
+ */
+/**
+ * @var Logos $block
+ */
+$savedImages = $block->getSavedImages();
+?>
+<script>
+    require(
+        ['jquery', 'Magento_Ui/js/modal/confirm'],
+        function($, confirmation) {
+            $('.delete_img_freedompay_hpp').change(function (event) {
+                if ($(this).is(":checked")) {
+                    let currentElement = $(this);
+                    confirmation({
+                        title: $.mage.__("Do you really want to delete the icon?"),
+                        content: $.mage.__("Are you sure you want to delete the icon " + $(this).val() + '?'),
+                        actions: {
+                            confirm: function(){
+                                return true
+                            },
+                            cancel: function(){
+                                $(currentElement).prop('checked', false);
+                                return false;
+                            },
+                            always: function(){}
+                        }
+                    });
+                }
+            });
+
+        $("#freedompay_hpp_logos_image").change(function () {
+            let afterContent = $.mage.__("1 File")
+            if ($(this)[0].files.length > 1) {
+                afterContent = $.mage.__($(this)[0].files.length + " Files")
+            }
+            $(".freedompay-hpp__upload-content").html(afterContent);
+        })
+    });
+</script>
+<div class="freedompay-card-payments__logo">
+    <div class="field">
+        <input
+            id="freedompay_hpp_logos_image"
+            class="card-payments__upload"
+            type="file"
+            name="groups[freedompay_hpp][fields][logos][value][images][]"
+            accept="image/*"
+            multiple
+        />
+        <span class="freedompay-hpp__upload-content"></span>
+    </div>
+    <div class="card-payments__images">
+        <?php foreach ($savedImages as $image): ?>
+            <div class="card-payments__image">
+                <img src="<?= $escaper->escapeHtmlAttr($image['image_full']) ?>"
+                     alt="<?= $escaper->escapeHtmlAttr(__('Card Logo')) ?>"
+                     title="<?= $escaper->escapeHtmlAttr(__('Card Logo')) ?>"
+                />
+                <input
+                    type="checkbox"
+                    class="delete_img_freedompay_hpp"
+                    value="<?= $escaper->escapeHtmlAttr($image['image']) ?>"
+                    name="groups[freedompay_hpp][fields][logos][value][delete][]"
+                />
+                <label><?= $escaper->escapeHtml(__("Delete")) ?></label>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>

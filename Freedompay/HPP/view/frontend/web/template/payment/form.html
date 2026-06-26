@@ -1,0 +1,70 @@
+<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title payment-method-title_freedompay field choice">
+        <div data-bind="visible: hasError" class="message error">
+            <span data-bind="text: getErrorMessage()"></span>
+        </div>
+        <input type="radio"
+               name="payment[method]"
+               class="radio"
+               data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()">
+        </input>
+        <label class="label" data-bind="attr: {'for': getCode()}">
+            <span data-bind="text: getTitle()"></span>
+        </label>
+        <ul>
+            <!-- ko foreach: getLogos() -->
+            <li>
+                <img data-bind="attr: { src: $data }" alt="Logo" />
+            </li>
+            <!--/ko-->
+        </ul>
+    </div>
+    <div class="payment-method-content">
+        <!-- ko foreach: getRegion('messages') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+        <div class="payment-method-billing-address">
+            <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+
+        <!-- ko if: isLoggedIn() -->
+        <div class="customer_card">
+            <!-- ko if: getCustomerCards().length > 0  -->
+            <select data-bind="attr: {'id': getSavedCardSelectElementId()},
+                event: {change: toggleCheckbox()}">
+                <!-- ko foreach: { data: getCustomerCards(), as: 'option' } -->
+                <option data-bind="text: option.text, value: option.value"></option>
+                <!-- /ko -->
+            </select>
+            <!-- /ko -->
+        </div>
+        <br></br>
+        <div data-bind="visible: isVisible, attr: {'id': getSaveCardDivElementId()}">
+            <div class="control">
+                <label class="label">
+                    <input type="checkbox" data-bind="attr: {'id': getSaveCardCheckboxElementId()}" id="freedompay_gateway_cc_save" ></input>
+                    <span data-bind="text: getSavedCardCheckboxLabel()"></span>
+                </label>
+            </div>
+        </div>
+        <!-- /ko -->
+
+        <div class="actions-toolbar">
+            <div class="primary">
+                <div>
+                    <span data-bind="i18n: 'You will be redirected to secure card entry page'"></span>
+                </div>
+                <button class="action primary checkout"
+                        type="submit"
+                        data-bind="
+                        click: initPayment,
+                        attr: {title: $t('Pay')}
+                        ">
+                    <span data-bind="i18n: 'Pay'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

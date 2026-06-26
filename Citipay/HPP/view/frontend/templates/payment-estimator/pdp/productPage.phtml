@@ -1,0 +1,36 @@
+<?php
+use Citipay\HPP\ViewModel\PaymentEstimator\Pdp\CalculationHtml;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Magento\Framework\View\Element\Template $block */
+/** @var CalculationHtml $viewModel */
+$viewModel = $block->getViewModel();
+$productId = $viewModel->getProductId();
+?>
+<?php if ($viewModel->isEnabledPdp()): ?>
+<div class="payment-estimator-content payment-estimator" data-mage-init='{"modalPopup":{}}'>
+    <div class="citipayimg-wrapper">
+        <img class="payment-estimator-logo" src=""
+             aria-label="CitiPay logo" alt="Citi Pay">
+        <span class="payment-estimator-logo-text"></span>
+    </div>
+    <div class="calc-wrapper">
+        <span class="payment-estimator-calculation-html"></span>
+        <a class="see-details-link" href="javascript:void(0);" role="button"
+           aria-label="See details about a Citi Pay Installment Loan">
+            <?= $escaper->escapeHtml(__('See Details')) ?>
+        </a>
+    </div>
+</div>
+<div id="payment-estimator-modal" style="display: none;">
+    <div class="modal-body-content payment-estimator-disclosure-text"></div>
+</div>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "rateCalculatorPDP": { "productId" : "<?= $productId //phpcs:ignore ?>"}
+    }
+}
+</script>
+<?php endif; ?>

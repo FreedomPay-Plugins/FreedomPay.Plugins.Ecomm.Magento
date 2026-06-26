@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job instance="Citipay\HPP\Cron\Process\Notification" method="execute"
+             name="citipay_hpp_process_notification">
+            <schedule>*/1 * * * *</schedule>
+        </job>
+    </group>
+</config>

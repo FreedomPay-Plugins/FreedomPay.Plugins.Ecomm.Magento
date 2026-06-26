@@ -1,0 +1,19 @@
+<?php
+// phpcs:disable Magento2.Templates.ThisInTemplate
+// phpcs:disable Squiz.PHP.GlobalKeyword.NotAllowed
+?>
+<?php /** @var $block DccTotals */
+/** @var Magento\Framework\Escaper $escaper */
+
+use Freedompay\Common\Block\Sales\Order\DccTotals; ?>
+<?php $dccData = $block->getDCCData() ?>
+<?php if ($dccData): ?>
+    <tr>
+        <th colspan="4" class="mark" scope="row">
+            <?= $escaper->escapeHtml(__('Grand total in ') .  $dccData['CurrencyCode']) ?>
+        </th>
+            <td class="amount">
+                <?= $escaper->escapeHtml($dccData['FormattedCurrency']) ?>
+            </td>
+    </tr>
+<?php endif; ?>

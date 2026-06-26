@@ -1,0 +1,37 @@
+<?php
+
+use Citipay\HPP\ViewModel\PaymentEstimator\Cart\CalculationHtml;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Magento\Framework\View\Element\Template $block */
+/** @var CalculationHtml $viewModel */
+$viewModel = $block->getViewModel();
+?>
+<?php if ($viewModel->isEnabledCart()): ?>
+<div class="payment-estimator-content payment-estimator payment-estimator-content--cart"
+     data-mage-init='{"modalPopup":{}}'>
+    <div class="citipayimg-wrapper">
+        <img src="" class="payment-estimator-logo"
+             aria-label="CitiPay logo" alt="Citi Pay">
+        <span class="payment-estimator-logo-text"></span>
+    </div>
+    <div class="calc-wrapper">
+        <span class="payment-estimator-calculation-html"></span>
+        <a class="see-details-link" href="javascript:void(0);" role="button"
+           aria-label="See details about a Citi Pay Installment Loan" >
+            <?= $escaper->escapeHtml(__('See Details')) ?>
+        </a>
+    </div>
+</div>
+<div id="payment-estimator-modal" style="display: none;">
+    <div class="modal-body-content payment-estimator-disclosure-text"></div>
+</div>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "rateCalculatorCart": {}
+        }
+    }
+</script>
+<?php endif; ?>

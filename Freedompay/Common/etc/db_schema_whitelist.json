@@ -1,0 +1,22 @@
+{
+    "fp_payment_transaction": {
+        "column": {
+            "entity_id": true,
+            "customer_id": true,
+            "transaction_id": true,
+            "response_status": true,
+            "verification_transaction_response": true,
+            "get_transaction_response": true,
+            "created_at": true
+        },
+        "index": {
+            "FP_PAYMENT_TRANSACTION_CUSTOMER_ID": true,
+            "FP_PAYMENT_TRANSACTION_TRANSACTION_ID": true,
+            "FP_PAYMENT_TRANSACTION_CREATED_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FP_PAYMENT_TRANSACTION_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID": true
+        }
+    }
+}

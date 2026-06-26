@@ -1,0 +1,24 @@
+<?php
+
+use Freedompay\HPP\ViewModel\Customer\AddNewCard;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Escaper $escaper */
+/** @var AddNewCard $viewModel */
+/** @var Template $block */
+
+$viewModel = $block->getData('view_model');
+$moduleStatus = $viewModel->getPaymentStatus();
+$url = $viewModel->getRedirectUrl();
+?>
+
+<?php if ($moduleStatus): ?>
+<p class="stored-payments_add-new-card">
+    <a href="<?= $escaper->escapeUrl($url) ?>"  >
+        <button type="button" title="Add New Card" class="action primary">
+            <span><?= $escaper->escapeHtml(__('Add New Card')) ?></span>
+        </button>
+    </a>
+</p>
+<?php endif; ?>

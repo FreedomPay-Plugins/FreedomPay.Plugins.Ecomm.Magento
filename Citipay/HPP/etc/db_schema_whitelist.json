@@ -1,0 +1,23 @@
+{
+    "citipay_notification": {
+        "column": {
+            "id": true,
+            "transaction_id": true,
+            "order_id": true,
+            "order_increment_id": true,
+            "content": true,
+            "status": true,
+            "retry_count": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "CITIPAY_NOTIFICATION_TRANSACTION_ID": true,
+            "CITIPAY_NOTIFICATION_ORDER_ID": true,
+            "CITIPAY_NOTIFICATION_ORDER_INCREMENT_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

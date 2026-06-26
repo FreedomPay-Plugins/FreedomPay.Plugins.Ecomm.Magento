@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="checkout.cart.totals.container">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="checkout.cart.mil.cart.block"
+                   after="checkout.cart.totals"
+                   template="Citipay_HPP::payment-estimator/cart/calculationhtml.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">
+                        Citipay\HPP\ViewModel\PaymentEstimator\Cart\CalculationHtml
+                    </argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

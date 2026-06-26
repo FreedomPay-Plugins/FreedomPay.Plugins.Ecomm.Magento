@@ -1,0 +1,519 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Citipay\HPP\Api\NotificationRepositoryInterface"
+                type="Citipay\HPP\Model\NotificationRepository"/>
+    <preference for="Citipay\HPP\Api\Data\NotificationInterface"
+                type="Citipay\HPP\Model\Notification"/>
+
+    <!-- Citi Pay Payment Method Facade Configuration -->
+    <virtualType name="CitipayHPPFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\Citipay\HPP\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">CitipayBlockInfo</argument>
+            <argument name="valueHandlerPool" xsi:type="object">CitipayHPPValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">CitipayHPPCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Info Block Type-->
+    <virtualType name="CitipayBlockInfo" type="Freedompay\Common\Block\Info">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Value Handlers Infrastructure -->
+    <virtualType name="CitipayHPPValueHandlerPool"
+                 type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">CitipayHPPConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="CitipayHPPConfigValueHandler"
+                 type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Commands Infrastructure -->
+    <virtualType name="CitipayHPPCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="createTransaction" xsi:type="string">CitipayHPPCreateTransactionCommand</item>
+                <item name="getTransaction" xsi:type="string">CitipayHPPGetTransactionCommand</item>
+                <item name="getTransactionWebhook" xsi:type="string">CitipayHPPWebhookGetTransactionCommand</item>
+                <item name="authorize" xsi:type="string">CitipayHPPAuthorizeCommand</item>
+                <item name="capture" xsi:type="string">CitipayHPPCaptureCommand</item>
+                <item name="cancel" xsi:type="string">CitipayHPPCancelCommand</item>
+                <item name="void" xsi:type="string">CitipayHPPCancelCommand</item>
+                <item name="refund" xsi:type="string">CitipayHPPRefundCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay CreateTransaction Command -->
+    <virtualType name="CitipayHPPCreateTransactionCommand" type="Freedompay\Common\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder"
+                      xsi:type="object">CitipayHPPCreateTransactionRequest</argument>
+            <argument name="transferFactory"
+                      xsi:type="object">CitipayHPPCreateTransactionTransferFactory</argument>
+            <argument name="client"
+                      xsi:type="object">CitipayHPPTransactionClient</argument>
+            <argument name="handler"
+                      xsi:type="object">Freedompay\Common\Gateway\Response\ResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay CreateTransaction Request -->
+    <virtualType name="CitipayHPPCreateTransactionRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="base_request"
+                      xsi:type="string">CitipayHPPBaseRequestDataBuilder</item>
+                <item name="checkout"
+                      xsi:type="string">CitipayHPPCheckoutDataBuilder</item>
+                <item name="fraud_check"
+                      xsi:type="string">CitipayHPPFraudCheckDataBuilder</item>
+                <item name="address"
+                      xsi:type="string">CitipayHPPAddressDataBuilder</item>
+                <item name="items"
+                      xsi:type="string">Freedompay\Common\Gateway\Request\ItemsDataBuilder</item>
+                <item name="system_info"
+                      xsi:type="string">CitipayHPPSystemInfoRequestDataBuilder</item>
+                <item name="additional_payment_methods"
+                      xsi:type="string">Citipay\HPP\Gateway\Request\CitipayTypeDataBuilder</item>
+                <item name="es_key" xsi:type="string">CitipayHPPEskeyDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay CreateTransaction Transfer Factory -->
+    <virtualType name="CitipayHPPCreateTransactionTransferFactory"
+                 type="Freedompay\Common\Gateway\Http\FreedomPayTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="transactionType"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::END_POINT_CREATE_TRANSACTION</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Transaction Client-->
+    <virtualType name="CitipayHPPTransactionClient" type="Freedompay\Common\Gateway\Http\Client\FreedomPayClient">
+        <arguments>
+            <argument name="logger" xsi:type="object">Citipay\HPP\Logger\Logger</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- CitiPay Transaction Client with Timeout-->
+    <virtualType name="CitipayHPPTransactionClientWithTimeout"
+                 type="Freedompay\Common\Gateway\Http\Client\TimeoutReversalClient">
+        <arguments>
+            <argument name="logger"
+                      xsi:type="object">Citipay\HPP\Logger\Logger</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay GetTransaction Command -->
+    <virtualType name="CitipayHPPGetTransactionCommand" type="Freedompay\Common\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder"
+                      xsi:type="object">CitipayHPPGetTransactionRequest</argument>
+            <argument name="transferFactory"
+                      xsi:type="object">CitipayHPPGetTransactionTransferFactory</argument>
+            <argument name="client"
+                      xsi:type="object">CitipayHPPTransactionClient</argument>
+            <argument name="handler"
+                      xsi:type="object">Freedompay\Common\Gateway\Response\TransactionIdHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay GetTransaction Request -->
+    <virtualType name="CitipayHPPGetTransactionRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="transaction_id"
+                      xsi:type="string">Freedompay\Common\Gateway\Request\TransactionIDDataBuilder
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay GetTransaction Transfer Factory -->
+    <virtualType name="CitipayHPPGetTransactionTransferFactory"
+                 type="Freedompay\Common\Gateway\Http\FreedomPayTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="transactionType"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::END_POINT_GET_TRANSACTION</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citipay Authorize Command -->
+    <virtualType name="CitipayHPPAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder"
+                      xsi:type="object">Freedompay\Common\Gateway\Request\TransactionIDDataBuilder</argument>
+            <argument name="transferFactory"
+                      xsi:type="object">Freedompay\Common\Gateway\Http\MagentoTransactionTransferFactory
+            </argument>
+            <argument name="client"
+                      xsi:type="object">Freedompay\Common\Gateway\Http\Client\MagentoTransactionClient</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Capture Command -->
+    <virtualType name="CitipayHPPCaptureCommand" type="Freedompay\Common\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder"
+                      xsi:type="object">CitipayHPPCaptureRequest</argument>
+            <argument name="transferFactory"
+                      xsi:type="object">CitipayHPPCaptureTransferFactory</argument>
+            <argument name="client"
+                      xsi:type="object">CitipayHPPTransactionClientWithTimeout</argument>
+            <argument name="validator"
+                      xsi:type="object">CitipayHPPCaptureResponseValidator</argument>
+            <argument name="handler"
+                      xsi:type="object">CitipayHPPCaptureResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Capture Request -->
+    <virtualType name="CitipayHPPCaptureRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="merchant" xsi:type="string">CitipayHPPMerchantDataBuilder</item>
+                <item name="invoice_data" xsi:type="string">Freedompay\Common\Gateway\Request\CaptureDataBuilder</item>
+                <item name="additional_information" xsi:type="string">CitipayHPPCaptureAdditionalDataBuilder</item>
+                <item name="system_info" xsi:type="string">CitipayHPPXmlSystemInfoRequestDataBuilder</item>
+                <item name="es_key" xsi:type="string">CitipayHPPBackofficeEskeyDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Capture TransferFactory -->
+    <virtualType name="CitipayHPPCaptureTransferFactory"
+                 type="Freedompay\Common\Gateway\Http\FreedomPayBackOfficeTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="serviceType" xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_CAPTURE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Capture Response Validator -->
+    <virtualType name="CitipayHPPCaptureResponseValidator"
+                 type="Freedompay\Common\Gateway\Validator\XmlResponseValidator">
+        <arguments>
+            <argument name="transactionType"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_CAPTURE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Capture Response Handler -->
+    <virtualType name="CitipayHPPCaptureResponseHandler"
+                 type="Freedompay\Common\Gateway\Response\XmlResponseHandler">
+        <arguments>
+            <argument name="transactionType"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_CAPTURE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Cancel Command -->
+    <virtualType name="CitipayHPPCancelCommand" type="Freedompay\Common\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder"
+                      xsi:type="object">CitipayHPPCancelRequest</argument>
+            <argument name="transferFactory"
+                      xsi:type="object">CitipayHPPCancelTransferFactory</argument>
+            <argument name="client"
+                      xsi:type="object">CitipayHPPTransactionClientWithTimeout</argument>
+            <argument name="validator"
+                      xsi:type="object">CitipayHPPCancelResponseValidator</argument>
+            <argument name="handler"
+                      xsi:type="object">CitipayHPPCancelResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Cancel Request -->
+    <virtualType name="CitipayHPPCancelRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="merchant" xsi:type="string">CitipayHPPMerchantDataBuilder</item>
+                <item name="additional_information" xsi:type="string">CitipayHPPCancelAdditionalDataBuilder</item>
+                <item name="system_info" xsi:type="string">CitipayHPPXmlSystemInfoRequestDataBuilder</item>
+                <item name="es_key" xsi:type="string">CitipayHPPBackofficeEskeyDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Cancel TransferFactory -->
+    <virtualType name="CitipayHPPCancelTransferFactory"
+                 type="Freedompay\Common\Gateway\Http\FreedomPayBackOfficeTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="serviceType" xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_VOID</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Cancel Response Validator -->
+    <virtualType name="CitipayHPPCancelResponseValidator"
+                 type="Freedompay\Common\Gateway\Validator\XmlResponseValidator">
+        <arguments>
+            <argument name="transactionType" xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_VOID</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Cancel Response Handler -->
+    <virtualType name="CitipayHPPCancelResponseHandler"
+                 type="Freedompay\Common\Gateway\Response\XmlResponseHandler">
+        <arguments>
+            <argument name="transactionType" xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_VOID</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Refund Command -->
+    <virtualType name="CitipayHPPRefundCommand" type="Freedompay\Common\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder"
+                      xsi:type="object">CitipayHPPRefundRequest</argument>
+            <argument name="transferFactory"
+                      xsi:type="object">CitipayHPPRefundTransferFactory</argument>
+            <argument name="client"
+                      xsi:type="object">CitipayHPPTransactionClientWithTimeout</argument>
+            <argument name="validator"
+                      xsi:type="object">CitipayHPPRefundResponseValidator</argument>
+            <argument name="handler"
+                      xsi:type="object">CitipayHPPRefundResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Refund Request -->
+    <virtualType name="CitipayHPPRefundRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="merchant" xsi:type="string">CitipayHPPMerchantDataBuilder</item>
+                <item name="credit_memo"
+                      xsi:type="string">Freedompay\Common\Gateway\Request\RefundDataBuilder</item>
+                <item name="additional_information" xsi:type="string">CitipayHPPRefundAdditionalDataBuilder</item>
+                <item name="system_info" xsi:type="string">CitipayHPPXmlSystemInfoRequestDataBuilder</item>
+                <item name="es_key" xsi:type="string">CitipayHPPBackofficeEskeyDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Refund TransferFactory -->
+    <virtualType name="CitipayHPPRefundTransferFactory"
+                 type="Freedompay\Common\Gateway\Http\FreedomPayBackOfficeTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="serviceType" xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_REFUND</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Refund Response Validator -->
+    <virtualType name="CitipayHPPRefundResponseValidator"
+                 type="Freedompay\Common\Gateway\Validator\XmlResponseValidator">
+        <arguments>
+            <argument name="transactionType"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_REFUND</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Refund Response Handler -->
+    <virtualType name="CitipayHPPRefundResponseHandler"
+                 type="Freedompay\Common\Gateway\Response\XmlResponseHandler">
+        <arguments>
+            <argument name="transactionType"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_REFUND</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Base Request Data Builder -->
+    <virtualType name="CitipayHPPBaseRequestDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\BaseRequestDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="requestHelper" xsi:type="object">CitipayHPPRequestHelper</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Checkout Data Builder -->
+    <virtualType name="CitipayHPPCheckoutDataBuilder"
+                 type="Citipay\HPP\Gateway\Request\CheckoutDataBuilder">
+        <arguments>
+            <argument name="requestHelper" xsi:type="object">CitipayHPPRequestHelper</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Fraud Check Data Builder -->
+    <virtualType name="CitipayHPPFraudCheckDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\FraudCheckDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Merchant  Data Builder -->
+    <virtualType name="CitipayHPPMerchantDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\MerchantDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Eskey Data Builder -->
+    <virtualType name="CitipayHPPEskeyDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\EskeyDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="esKey"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::REQUEST_PARAM_ESKEY</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Backoffice Eskey Data Builder -->
+    <virtualType name="CitipayHPPBackofficeEskeyDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\EskeyDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="esKey"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::REQUEST_FREEWAY_ESKEY</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Address Data Builder -->
+    <virtualType name="CitipayHPPAddressDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\AddressDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="requestHelper" xsi:type="object">CitipayHPPRequestHelper</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Capture Additional Information Data Builder -->
+    <virtualType name="CitipayHPPCaptureAdditionalDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\AdditionalInformationDataBuilder">
+        <arguments>
+            <argument name="transactionType"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_CAPTURE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Refund Additional Information Data Builder -->
+    <virtualType name="CitipayHPPRefundAdditionalDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\AdditionalInformationDataBuilder">
+        <arguments>
+            <argument name="transactionType"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_REFUND</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Cancel Additional Information Data Builder -->
+    <virtualType name="CitipayHPPCancelAdditionalDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\AdditionalInformationDataBuilder">
+        <arguments>
+            <argument name="transactionType"
+                      xsi:type="const">Freedompay\Common\Helper\Requests::SERVICE_VOID</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay System Info Builder -->
+    <virtualType name="CitipayHPPSystemInfoRequestDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\SystemInfoDataBuilder">
+        <arguments>
+            <argument name="requestHelper" xsi:type="object">CitipayHPPRequestHelper</argument>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="moduleName"
+                      xsi:type="const">Citipay\HPP\Gateway\Config\PaymentConfig::MODULE_NAME</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay XML System Info Builder -->
+    <virtualType name="CitipayHPPXmlSystemInfoRequestDataBuilder"
+                 type="Freedompay\Common\Gateway\Request\XmlSystemInfoDataBuilder">
+        <arguments>
+            <argument name="requestHelper" xsi:type="object">CitipayHPPRequestHelper</argument>
+            <argument name="config" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+            <argument name="moduleName"
+                      xsi:type="const">Citipay\HPP\Gateway\Config\PaymentConfig::MODULE_NAME</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Request Helper -->
+    <virtualType name="CitipayHPPRequestHelper"
+                 type="Freedompay\Common\Helper\Requests">
+        <arguments>
+            <argument name="paymentConfig" xsi:type="object">Citipay\HPP\Gateway\Config\PaymentConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay CreateTransaction Service -->
+    <type name="Citipay\HPP\Model\CreateTransaction">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">CitipayHPPCommandPool</argument>
+        </arguments>
+    </type>
+
+    <!-- Citi Pay GetTransaction Service -->
+    <type name="Citipay\HPP\Model\GetTransaction">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">CitipayHPPCommandPool</argument>
+        </arguments>
+    </type>
+
+    <!-- Citi Pay Log Handler -->
+    <type name="Citipay\HPP\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">CitipayHPPLogHandler</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Freedompay\Common\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Citipay PaymentEstimator Log Handler -->
+    <type name="Citipay\HPP\Logger\PaymentEstimatorApi\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">CitipayPaymentEstimatorLogHandler</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Citipay\HPP\Logger\PaymentEstimatorApi\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Citi Pay Webhook GetTransaction Command -->
+    <virtualType name="CitipayHPPWebhookGetTransactionCommand"
+                 type="Citipay\HPP\Gateway\Command\WebhookGatewayCommand">
+        <arguments>
+            <argument name="requestBuilder"
+                      xsi:type="object">CitipayHPPWebhookGetTransactionRequest</argument>
+            <argument name="transferFactory"
+                      xsi:type="object">Citipay\HPP\Gateway\Http\CitipayWebhookTransferFactory</argument>
+            <argument name="client"
+                      xsi:type="object">CitipayHPPTransactionClient</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Citi Pay Webhook GetTransaction Request -->
+    <virtualType name="CitipayHPPWebhookGetTransactionRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="transaction_id"
+                      xsi:type="string">Citipay\HPP\Gateway\Request\TransactionIDDataBuilder
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Register Webhook GetTransaction Service -->
+    <type name="Citipay\HPP\Model\TransactionOrderUpdater">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">CitipayHPPCommandPool</argument>
+        </arguments>
+    </type>
+</config>

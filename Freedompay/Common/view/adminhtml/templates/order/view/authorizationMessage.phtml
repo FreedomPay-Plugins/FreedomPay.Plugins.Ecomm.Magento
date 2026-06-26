@@ -1,0 +1,17 @@
+<?php
+use Freedompay\Common\Block\Adminhtml\Order\View\Info\AuthorizationExpiryMessage;
+use Magento\Framework\Escaper;
+
+/**
+ * @var AuthorizationExpiryMessage $block
+ * @var Escaper $escaper*/
+$orderStatus = $block->getAuthorizationExpiryStatus();
+?>
+<?php if ($orderStatus): ?>
+    <div class="order-payment-message-wrapper">
+        <span class="order-payment-message">
+            <?= $escaper->escapeHtml(
+                __('Authorization may expire soon, please look to complete the order/capture.')
+            )?></span>
+    </div>
+<?php endif; ?>

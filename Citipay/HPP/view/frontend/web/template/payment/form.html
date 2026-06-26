@@ -1,0 +1,62 @@
+<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title payment-method-title_freedompay field choice">
+        <div data-bind="visible: hasError" class="message error">
+            <span data-bind="text: getErrorMessage()"></span>
+        </div>
+        <input type="radio"
+               name="payment[method]"
+               class="radio"
+               data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()">
+        </input>
+        <label class="label" data-bind="attr: {'for': getCode()}">
+            <span data-bind="text: getTitle()"></span>
+        </label>
+        <ul>
+            <li class="citipay-logo-img">
+                <img data-bind="attr: {src: getLogoSrc()}" alt="logo" />
+            </li>
+        </ul>
+    </div>
+    <div class="payment-estimator-content-wrapper payment-estimator-checkout rc-loader" data-bind="visible: isPaymentEstimatorContentVisible">
+        <div class="payment-estimator-content payment-estimator" data-mage-init='{"modalPopup":{}}'>
+            <div class="citipayimg-wrapper" style="display: none;">
+                <img class="payment-estimator-logo" src=""
+                     aria-label="CitiPay logo" alt="Citi Pay">
+                <span class="payment-estimator-logo-text"></span>
+            </div>
+            <span class="payment-estimator-calculation-html"></span>
+            <a class="see-details-link" href="javascript:void(0);" role="button"
+               aria-label="See details about a Citi Pay Installment Loan"  style="display: none;"> See Details</a>
+        </div>
+        <div id="payment-estimator-modal" style="display: none;">
+            <div class="modal-body-content payment-estimator-disclosure-text"></div>
+        </div>
+    </div>
+    <div class="payment-method-content">
+
+        <!-- ko foreach: getRegion('messages') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+        <div class="payment-method-billing-address">
+            <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+
+        <div class="actions-toolbar">
+            <div class="primary">
+                <div>
+                    <span data-bind="i18n: 'You will be redirected to secure card entry page'"></span>
+                </div>
+                <button class="action primary checkout"
+                        type="submit"
+                        data-bind="
+                        click: initPayment,
+                        attr: {title: $t('Pay')}
+                        ">
+                    <span data-bind="i18n: 'Pay'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

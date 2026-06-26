@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="citipay_notification" resource="default" engine="innodb"
+           comment="CitiPay notification table">
+        <column xsi:type="int" name="id" unsigned="true" nullable="false" padding="10" identity="true"
+                comment="Entity id"/>
+        <column xsi:type="varchar" name="transaction_id" nullable="true" length="255"
+                comment="Transaction id"/>
+        <column xsi:type="varchar" name="order_id" nullable="true" length="255"
+                comment="Order id"/>
+        <column xsi:type="varchar" name="order_increment_id" nullable="true" length="255"
+                comment="Order increment id"/>
+        <column xsi:type="longtext" name="content" nullable="true"
+                comment="Notification content"/>
+        <column xsi:type="varchar" name="status" nullable="true" length="255"
+                comment="Status"/>
+        <column xsi:type="varchar" name="retry_count" nullable="true" length="255"
+                comment="Retry count"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP"
+                comment="Creation time"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP"
+                comment="Updated time"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <index xsi:type="index" referenceId="CITIPAY_NOTIFICATION_TRANSACTION_ID" indexType="btree">
+            <column name="transaction_id"/>
+        </index>
+        <index xsi:type="index" referenceId="CITIPAY_NOTIFICATION_ORDER_ID" indexType="btree">
+            <column name="order_id"/>
+        </index>
+        <index xsi:type="index" referenceId="CITIPAY_NOTIFICATION_ORDER_INCREMENT_ID" indexType="btree">
+            <column name="order_increment_id"/>
+        </index>
+    </table>
+</schema>

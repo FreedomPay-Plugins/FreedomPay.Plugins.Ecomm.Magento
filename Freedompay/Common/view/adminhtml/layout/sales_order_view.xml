@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Freedompay_Common::css/custom.css"/>
+    </head>
+    <body>
+        <referenceBlock name="order_tab_info">
+            <block class="Freedompay\Common\Block\Adminhtml\Order\Totals"
+                   name="order_totals"
+                   template="Magento_Sales::order/totals.phtml" />
+        </referenceBlock>
+
+        <referenceContainer name="payment_additional_info">
+            <block class="Freedompay\Common\Block\Adminhtml\Order\View\Info\AuthorizationExpiryMessage"
+                   name="freedompay_authorize_payment_message"
+                   template="Freedompay_Common::order/view/authorizationMessage.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

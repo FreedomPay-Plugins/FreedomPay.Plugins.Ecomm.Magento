@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock class="Magento\Checkout\Block\Onepage\Success" name="checkout.success"
+                        template="Freedompay_Common::success.phtml">
+            <container name="order.success.additional.info" label="Order Success Additional Info"/>
+        </referenceBlock>
+    </body>
+</page>

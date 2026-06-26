@@ -1,0 +1,41 @@
+.payment-method-title.payment-method-title_freedompay.field.choice {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+.payment-method-title_freedompay ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 20px;
+    justify-content: flex-end;
+    align-items: flex-start;
+    max-width: 60%;
+    margin-left: auto;
+}
+.payment-method-title_freedompay ul li {
+    flex: 0 1 auto;
+    margin-right: 5px;
+}
+.payment-method-title_freedompay ul li img {
+    max-width: 50px;
+    min-width: 50px;
+}
+.payment-method-title_freedompay .message.error {
+    flex: 1 1 100%;
+}
+
+.payment-method .message.error {
+    display: none;
+}
+
+.payment-method._active .message.error {
+    display: inline-flex;
+}
+
+.stored-payments_add-new-card {
+    margin: 15px 0;
+}

@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<config
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="freedompay_hpp" translate="label" type="text" sortOrder="1"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>FreedomPay</label>
+                <field id="active" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="title" translate="label" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="mode" translate="label" type="select" sortOrder="30"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Mode</label>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                    <source_model>Freedompay\Common\Model\Adminhtml\Source\Environment</source_model>
+                </field>
+                <field id="test_store_id" translate="label" type="text" sortOrder="40"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Test Store ID</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="mode">test</field>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="test_terminal_id" translate="label" type="text" sortOrder="50"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Test Terminal ID</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="mode">test</field>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="live_store_id" translate="label" type="text" sortOrder="60"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Live Store ID</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="mode">live</field>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="live_terminal_id" translate="label" type="text" sortOrder="70"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Live Terminal ID</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="mode">live</field>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="css_id" translate="label" type="text" sortOrder="90"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CSS ID</label>
+                    <tooltip>Hosted Payment Page supports customized CSS templates. If you would like to configure
+                        a custom style, please contact your Account Manager or our Systems Integrations team for
+                        guidance as to which value to enter here that needs to map to the CSS ID
+                        which the merchant holds against your Store account
+                    </tooltip>
+                </field>
+                <field id="time_out" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1">
+                    <label>Time Out Minutes</label>
+                    <validate>required-entry validate-number-range number-range-5-30</validate>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                    <comment>The value should be between 5 and 30, including 5 and 30</comment>
+                </field>
+                <field id="logos" translate="label" sortOrder="110"
+                       showInDefault="1" type="Freedompay\HPP\Block\Adminhtml\System\Config\Form\Field\Logos\Upload">
+                    <label>Upload Logo</label>
+                    <backend_model>Freedompay\Common\Model\Config\Backend\Logos\MultipleImageUpload</backend_model>
+                    <comment>
+                        Logo maximum size allowed is 100 KB and supported file types are JPG, JPEG and PNG</comment>
+                </field>
+                <field id="payment_action" translate="label" type="select" sortOrder="120"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Transaction Type</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                    <source_model>Freedompay\Common\Model\Adminhtml\Source\PaymentAction</source_model>
+                    <tooltip>Transaction Type supports both “Auth Only” and “Sale” transaction methods.
+                        For business where goods or services are delivered after a delay, payment authorization and
+                        capture should be handled separately to comply with card scheme requirements.
+                        In such cases, the payment authorization occurs at the time of purchase, and capture should be
+                        completed once the goods or services are fulfilled or dispatched.
+                        This process is typically managed through order or invoice management systems to ensure
+                        compliance and smooth transaction processing.
+                    </tooltip>
+                </field>
+                <field id="split_capture" translate="label" type="select" sortOrder="125"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Allow Split Capture</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="request_token" translate="label" type="select" sortOrder="130"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Request Token</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="token_type" translate="label" type="text" sortOrder="140"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Token Type</label>
+                    <validate>validate-number validate-length maximum-length-2 required-entry</validate>
+                    <depends>
+                        <field id="request_token">1</field>
+                    </depends>
+                    <comment>Value should be numeric and maximum 2 digit length</comment>
+                    <tooltip>Token Type supports multiple formats. If your payment flows require the use of Tokens for
+                        Card on File purposes or allowing consumers to save their card details to their
+                        online account profile, please contact your Account Manager or Systems Integrations team
+                        for guidance as to which value to enter here.</tooltip>
+                </field>
+                <field id="3ds" translate="label" type="select" sortOrder="150"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Enable 3DS</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip>Use 3DS store for 3DS flow and Non-3DS store for Non-3DS flow.</tooltip>
+                </field>
+                <field id="dynamic_currency_conversion" translate="label" type="select" sortOrder="160"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Dynamic Currency Conversion</label>
+                    <validate>required-entry</validate>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_address" translate="label" type="select" sortOrder="170"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Show Address</label>
+                    <validate>required-entry</validate>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="address_required" translate="label" type="select" sortOrder="180"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Address Required</label>
+                    <validate>required-entry</validate>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip>If 3DS is enabled, the HPP Address Required flag will always be sent as true
+                        for payment processing regardless of the value selected in this field.</tooltip>
+                </field>
+                <field id="allow_intl_address" translate="label" type="select" sortOrder="190"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Allow Global Address</label>
+                    <validate>required-entry</validate>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip>If 3DS is enabled, the HPP Allow Global Address flag will always be sent as true
+                        for payment processing regardless of the value selected in this field.</tooltip>
+                </field>
+                <field id="additional_payment_methods" translate="label"
+                       type="multiselect" sortOrder="210" showInDefault="1" showInWebsite="1">
+                    <label>Additional Payment Methods</label>
+                    <source_model>Freedompay\HPP\Model\Adminhtml\Source\AdditionalPaymentMethods</source_model>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="system_name" translate="label" type="text" sortOrder="220"
+                       showInDefault="1" showInWebsite="1">
+                    <label>System Name</label>
+                    <validate>required-entry validate-length maximum-length-50</validate>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="system_version" translate="label" type="text" sortOrder="230"
+                       showInDefault="1" showInWebsite="1">
+                    <label>System Version</label>
+                    <validate>required-entry validate-length maximum-length-50</validate>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="240" showInDefault="9"
+                       showInWebsite="1">
+                    <label>Payment From Applicable Countries</label>
+                    <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                </field>
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="250" showInDefault="1"
+                       showInWebsite="1">
+                    <label>Payment From Specific Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                </field>
+                <field id="sort_order" translate="label" type="text"
+                       sortOrder="250" showInDefault="1" showInWebsite="1">
+                    <label>Sort Order</label>
+                    <frontend_class>validate-number</frontend_class>
+                </field>
+                <field id="mandatory_validation" translate="label" type="select"
+                       sortOrder="260" showInDefault="1" showInWebsite="1">
+                    <label>Enable mandatory field validation</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Validates the payload and logs missing mandatory FreedomPay fields in the admin</comment>
+                </field>
+                <field id="debug" translate="label" type="select" sortOrder="270"
+                       showInDefault="1" showInWebsite="1">
+                    <label>Enable Debug Log</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="download_logs" translate="label" type="label" sortOrder="280" showInDefault="1"
+                       showInWebsite="1">
+                    <frontend_model>Freedompay\HPP\Block\Adminhtml\System\Config\Form\Field\Link\DownloadLogs</frontend_model>
+                </field>
+                <include path="Freedompay_Common::fraud_settings.xml"/>
+            </group>
+        </section>
+    </system>
+</config>

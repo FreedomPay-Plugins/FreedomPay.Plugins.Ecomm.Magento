@@ -1,0 +1,13 @@
+.freedompay-logos__chk {
+    display: flex;
+    flex-wrap: wrap;
+}
+.freedompay-logos__li {
+    margin: 7px !important;
+}
+
+.freedompay-logos__img {
+    min-width: 50px;
+    max-width: 50px;
+    vertical-align: top;
+}

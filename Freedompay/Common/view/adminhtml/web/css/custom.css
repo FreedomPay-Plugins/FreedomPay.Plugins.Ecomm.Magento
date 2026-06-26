@@ -1,0 +1,7 @@
+.order-payment-message-wrapper {
+    margin-top: 10px;
+}
+.order-payment-message-wrapper .order-payment-message {
+    color: red;
+    font-weight: bold;
+}
